@@ -23,7 +23,9 @@ class RegistrationController extends AbstractController
         $this->emailVerifier = $emailVerifier;
     }
 
-    #[Route('/register', name: 'app_register')]
+    /**
+     * @Route("/register", name="app_register")
+     */
     public function register(Request $request, UserPasswordHasherInterface $userPasswordHasherInterface): Response
     {
         $user = new User();
@@ -33,7 +35,7 @@ class RegistrationController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             // encode the plain password
             $user->setPassword(
-            $userPasswordHasherInterface->hashPassword(
+                $userPasswordHasherInterface->hashPassword(
                     $user,
                     $form->get('plainPassword')->getData()
                 )
@@ -44,9 +46,11 @@ class RegistrationController extends AbstractController
             $entityManager->flush();
 
             // generate a signed url and email it to the user
-            $this->emailVerifier->sendEmailConfirmation('app_verify_email', $user,
+            $this->emailVerifier->sendEmailConfirmation(
+                'app_verify_email',
+                $user,
                 (new TemplatedEmail())
-                    ->from(new Address('djemil.aminou@gmail.com', '"djemil"'))
+                    ->from(new Address('testdev.jay@gmail.com', 'djemil'))
                     ->to($user->getEmail())
                     ->subject('Please Confirm your Email')
                     ->htmlTemplate('registration/confirmation_email.html.twig')
