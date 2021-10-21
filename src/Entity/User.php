@@ -94,11 +94,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $BonPlan;
 
+    /**
+     * @ORM\OneToMany(targetEntity=JamConcert::class, mappedBy="user")
+     */
+    private $jamConcert;
+
     public function __construct()
     {
         $this->Article = new ArrayCollection();
         $this->Commentaire = new ArrayCollection();
         $this->BonPlan = new ArrayCollection();
+        $this->jamConcert = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -370,6 +376,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($bonPlan->getUser() === $this) {
                 $bonPlan->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|JamConcert[]
+     */
+    public function getJamConcert(): Collection
+    {
+        return $this->jamConcert;
+    }
+
+    public function addJamConcert(JamConcert $jamConcert): self
+    {
+        if (!$this->jamConcert->contains($jamConcert)) {
+            $this->jamConcert[] = $jamConcert;
+            $jamConcert->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeJamConcert(JamConcert $jamConcert): self
+    {
+        if ($this->jamConcert->removeElement($jamConcert)) {
+            // set the owning side to null (unless already changed)
+            if ($jamConcert->getUser() === $this) {
+                $jamConcert->setUser(null);
             }
         }
 
