@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -76,6 +78,28 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @ORM\Column(type="boolean")
      */
     private $isVerified = false;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Article::class, mappedBy="user")
+     */
+    private $Article;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Commentaire::class, mappedBy="user")
+     */
+    private $Commentaire;
+
+    /**
+     * @ORM\OneToMany(targetEntity=BonPlan::class, mappedBy="user")
+     */
+    private $BonPlan;
+
+    public function __construct()
+    {
+        $this->Article = new ArrayCollection();
+        $this->Commentaire = new ArrayCollection();
+        $this->BonPlan = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -258,6 +282,96 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setIsVerified(bool $isVerified): self
     {
         $this->isVerified = $isVerified;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Article[]
+     */
+    public function getArticle(): Collection
+    {
+        return $this->Article;
+    }
+
+    public function addArticle(Article $article): self
+    {
+        if (!$this->Article->contains($article)) {
+            $this->Article[] = $article;
+            $article->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeArticle(Article $article): self
+    {
+        if ($this->Article->removeElement($article)) {
+            // set the owning side to null (unless already changed)
+            if ($article->getUser() === $this) {
+                $article->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Commentaire[]
+     */
+    public function getCommentaire(): Collection
+    {
+        return $this->Commentaire;
+    }
+
+    public function addCommentaire(Commentaire $commentaire): self
+    {
+        if (!$this->Commentaire->contains($commentaire)) {
+            $this->Commentaire[] = $commentaire;
+            $commentaire->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCommentaire(Commentaire $commentaire): self
+    {
+        if ($this->Commentaire->removeElement($commentaire)) {
+            // set the owning side to null (unless already changed)
+            if ($commentaire->getUser() === $this) {
+                $commentaire->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|BonPlan[]
+     */
+    public function getBonPlan(): Collection
+    {
+        return $this->BonPlan;
+    }
+
+    public function addBonPlan(BonPlan $bonPlan): self
+    {
+        if (!$this->BonPlan->contains($bonPlan)) {
+            $this->BonPlan[] = $bonPlan;
+            $bonPlan->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBonPlan(BonPlan $bonPlan): self
+    {
+        if ($this->BonPlan->removeElement($bonPlan)) {
+            // set the owning side to null (unless already changed)
+            if ($bonPlan->getUser() === $this) {
+                $bonPlan->setUser(null);
+            }
+        }
 
         return $this;
     }
