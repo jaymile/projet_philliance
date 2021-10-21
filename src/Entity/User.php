@@ -55,11 +55,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $image;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
-     */
-    private $instrument_jouer_id;
-
-    /**
      * @ORM\Column(type="datetime")
      */
     private $date;
@@ -99,12 +94,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $jamConcert;
 
+    /**
+     * @ORM\OneToMany(targetEntity=InstrumentJouer::class, mappedBy="user")
+     */
+    private $instrumentJouer;
+
     public function __construct()
     {
         $this->Article = new ArrayCollection();
         $this->Commentaire = new ArrayCollection();
         $this->BonPlan = new ArrayCollection();
         $this->jamConcert = new ArrayCollection();
+        $this->instrumentJouer = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -406,6 +407,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($jamConcert->getUser() === $this) {
                 $jamConcert->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|InstrumentJouer[]
+     */
+    public function getInstrumentJouer(): Collection
+    {
+        return $this->instrumentJouer;
+    }
+
+    public function addInstrumentJouer(InstrumentJouer $instrumentJouer): self
+    {
+        if (!$this->instrumentJouer->contains($instrumentJouer)) {
+            $this->instrumentJouer[] = $instrumentJouer;
+            $instrumentJouer->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeInstrumentJouer(InstrumentJouer $instrumentJouer): self
+    {
+        if ($this->instrumentJouer->removeElement($instrumentJouer)) {
+            // set the owning side to null (unless already changed)
+            if ($instrumentJouer->getUser() === $this) {
+                $instrumentJouer->setUser(null);
             }
         }
 
