@@ -45,7 +45,7 @@ class Article
     private $user;
 
     /**
-     * @ORM\OneToMany(targetEntity=Commentaire::class, mappedBy="article_id")
+     * @ORM\OneToMany(targetEntity=Commentaire::class, mappedBy="Article")
      */
     private $commentaire;
 

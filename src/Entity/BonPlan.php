@@ -45,7 +45,7 @@ class BonPlan
     private $user;
 
     /**
-     * @ORM\OneToMany(targetEntity=Commentaire::class, mappedBy="bonPlan_id")
+     * @ORM\OneToMany(targetEntity=Commentaire::class, mappedBy="bonPlan")
      */
     private $commentaire;
 

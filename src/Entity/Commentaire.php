@@ -35,12 +35,12 @@ class Commentaire
     /**
      * @ORM\ManyToOne(targetEntity=Article::class, inversedBy="commentaire")
      */
-    private $article_id;
+    private $article;
 
     /**
      * @ORM\ManyToOne(targetEntity=BonPlan::class, inversedBy="commentaire")
      */
-    private $bonPlan_id;
+    private $bonPlan;
 
     public function getId(): ?int
     {
